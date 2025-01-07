@@ -81,6 +81,7 @@ const open =
     reload: !!~process.argv.indexOf('--reload'),
     module: !!~process.argv.indexOf('--module'),
     static: !!~process.argv.indexOf('--static'),
+    headers: process.argv.indexOf('--headers') !== -1 ? JSON.parse(process.argv[process.argv.indexOf('--headers') + 1]): undefined,
     credentials,
   });
 

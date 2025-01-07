@@ -18,6 +18,7 @@ module.exports = async ({
   reload = true,
   static = false,
   inject = '',
+  headers = undefined,
   credentials,
   port,
 } = {}) => {
@@ -154,7 +155,16 @@ module.exports = async ({
   server((req, res) => {
     const decodePathname = decodeURI(url.parse(req.url).pathname);
     const pathname = path.normalize(decodePathname).replace(/^(\.\.(\/|\\|$))+/, '');
-    res.setHeader('access-control-allow-origin', '*');
+    if (headers) {
+      // Use the provided headers
+      Object.entries(headers).forEach(([key, value]) => {
+        res.setHeader(key, value);
+      })
+
+    } else {
+      // Set a broad access control
+      res.setHeader('access-control-allow-origin', '*');
+    }
     if (reload && pathname === '/livereload') return serveReload(res);
     if (!isRouteRequest(pathname)) return serveStaticFile(res, pathname);
     return serveRoute(res, pathname);
